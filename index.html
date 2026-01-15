@@ -3,40 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Tasks and Hobbies</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f2f5;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 300px;
+        }
+        input {
+            padding: 8px;
+            width: 70%;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            text-align: left;
+        }
+    </style>
 </head>
 <body>
 
-    <header>
-        <h1>My Structured Lists Demo</h1>
-    </header>
-    <hr>
-    <section>
-        <h2>Daily Tasks (Ordered List)</h2>        
-        <ol>
-            <li>Wake up and have breakfast.</li>
-            <li>Going to college.</li>
-            <li>Attending the classes.</li>
-            <li>Take a 30-minute walk or workout after classes.</li>
-            <li>Have dinner and plan for the next day.</li>
-            <li>Play some games.</li>
-            <li>Do some study and then sleep.</li>
-        </ol>
-    </section>
-    <hr>
-    <section>
-        <h2>Hobbies and Interests (Unordered List)</h2>
-        <ul>
-            <li>Landscape Photography</li>
-            <li>Cinematography</li>
-            <li>Playing Badminton</li>
-            <li>Playing the acoustic guitar </li>
-            <li>Swimming</li>
-            <li>Listening to music</li>
-        </ul>
-    </section>
+    <div class="container">
+        <h2>Weather Check</h2>
+        <input type="text" id="cityInput" placeholder="Enter city name">
+        <button onclick="getWeather()">Search</button>
+        <div id="weatherResult" class="result"></div>
+    </div>
+
+    <script>
+        async function getWeather() {
+            const city = document.getElementById('cityInput').value;
+            const resultDiv = document.getElementById('weatherResult');
+            const apiKey = "b5750213381bd32a5585e49527b8494a";
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+            resultDiv.innerHTML = "";
+
+            try {
+                if (!city) throw new Error("Please enter a city name");
+
+                const response = await fetch(url);
+
+                if (!response.ok) throw new Error("City not found");
+
+                const data = await response.json();
+
+                resultDiv.innerHTML = `
+                    <p><strong>Temp:</strong> ${data.main.temp}°C</p>
+                    <p><strong>Humidity:</strong> ${data.main.humidity}%</p>
+                    <p><strong>Condition:</strong> ${data.weather[0].description}</p>
+                `;
+
+            } catch (error) {
+                resultDiv.innerHTML = `<p style="color: red;">${error.message}</p>`;
+            }
+        }
+    </script>
 </body>
 </html>
-
-
